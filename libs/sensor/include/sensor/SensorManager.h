@@ -29,6 +29,7 @@
 
 #include <utils/Errors.h>
 #include <utils/StrongPointer.h>
+#include <utils/Singleton.h>
 #include <utils/Vector.h>
 #include <utils/String8.h>
 
@@ -50,11 +51,22 @@ class Sensor;
 class SensorEventQueue;
 // ----------------------------------------------------------------------------
 
-class SensorManager : public ASensorManager
+class SensorManager :
+#ifdef STE_HARDWARE
+    public ASensorManager,
+    public Singleton<SensorManager>
+#else
+    public ASensorManager
+#endif
 {
 public:
     static SensorManager& getInstanceForPackage(const String16& packageName);
+#ifdef STE_HARDWARE
+    SensorManager();
     ~SensorManager();
+#else
+    ~SensorManager();
+#endif
 
 #ifdef COMPAT_SENSORS_M
     ssize_t getSensorList(Sensor const* const** list) const;
@@ -63,7 +75,12 @@ public:
 #endif
     ssize_t getDynamicSensorList(Vector<Sensor>& list);
     Sensor const* getDefaultSensor(int type);
+#ifdef STE_HARDWARE
+    sp<SensorEventQueue> createEventQueue();
+    sp<SensorEventQueue> createEventQueue(String8 packageName, int mode = 0);
+#else
     sp<SensorEventQueue> createEventQueue(String8 packageName = String8(""), int mode = 0);
+#endif
     bool isDataInjectionEnabled();
     int createDirectChannel(size_t size, int channelType, const native_handle_t *channelData);
     void destroyDirectChannel(int channelNativeHandle);

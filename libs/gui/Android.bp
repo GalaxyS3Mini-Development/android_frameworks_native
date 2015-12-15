@@ -125,6 +125,7 @@ cc_defaults {
         "libcutils",
         "libEGL",
         "libGLESv2",
+        "libsensor",
         "libui",
         "libutils",
         "libnativewindow",

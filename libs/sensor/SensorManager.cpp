@@ -42,6 +42,10 @@ namespace android {
 Mutex SensorManager::sLock;
 std::map<String16, SensorManager*> SensorManager::sPackageInstances;
 
+#ifdef STE_HARDWARE
+ANDROID_SINGLETON_STATIC_INSTANCE(SensorManager)
+#endif
+
 SensorManager& SensorManager::getInstanceForPackage(const String16& packageName) {
     waitForSensorService(nullptr);
 
@@ -97,6 +101,15 @@ SensorManager::SensorManager(const String16& opPackageName)
     Mutex::Autolock _l(mLock);
     assertStateLocked();
 }
+
+#ifdef STE_HARDWARE
+SensorManager::SensorManager()
+    : mSensorList(0), mOpPackageName(String16(""))
+{
+    // okay we're not locked here, but it's not needed during construction
+    assertStateLocked();
+}
+#endif
 
 SensorManager::~SensorManager() {
     free(mSensorList);
@@ -234,6 +247,13 @@ Sensor const* SensorManager::getDefaultSensor(int type)
     }
     return NULL;
 }
+
+#ifdef STE_HARDWARE
+sp<SensorEventQueue> SensorManager::createEventQueue()
+{
+    return createEventQueue(String8(""), 0);
+}
+#endif
 
 sp<SensorEventQueue> SensorManager::createEventQueue(String8 packageName, int mode) {
     sp<SensorEventQueue> queue;
