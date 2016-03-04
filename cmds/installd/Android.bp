@@ -3,12 +3,6 @@ cc_defaults {
 
     cflags: [
         "-Wall",
-        "-Werror",
-        "-Wextra",
-
-        "-Wunreachable-code",
-        "-Wunreachable-code-break",
-        "-Wunreachable-code-return",
     ],
     srcs: [
         "CacheItem.cpp",
