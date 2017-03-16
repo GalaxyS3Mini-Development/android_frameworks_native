@@ -33,7 +33,6 @@
 
 #ifdef STE_HARDWARE
 #include <hardware/copybit.h>
-#include <gui/IGraphicBufferAlloc.h>
 #endif
 
 namespace android {
@@ -515,10 +514,6 @@ private:
     // mBlitEngine is the handle to the copybit device which will be used in
     // case color transform is needed before the EGL image is created.
     copybit_device_t* mBlitEngine;
-
-    // mGraphicBufferAlloc is the connection to SurfaceFlinger that is used to
-    // allocate new GraphicBuffer objects.
-    sp<IGraphicBufferAlloc> mGraphicBufferAlloc;
 
     // mBlitSlots stores the buffers that have been allocated int the case
     // of color transform. It is initialised to null pointer,s and gets

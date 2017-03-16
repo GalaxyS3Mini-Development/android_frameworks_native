@@ -164,10 +164,6 @@ GLConsumer::GLConsumer(const sp<IGraphicBufferConsumer>& bq, uint32_t tex,
     ALOGE_IF(!mBlitEngine, "\nCannot open copybit mBlitEngine=%p", mBlitEngine);
 
     sp<ISurfaceComposer> composer(ComposerService::getComposerService());
-          mGraphicBufferAlloc = composer->createGraphicBufferAlloc();
-    if (mGraphicBufferAlloc == 0) {
-        GLC_LOGE("createGraphicBufferAlloc() failed in SurfaceTexture()");
-    }
 #endif
 
     mConsumer->setConsumerUsageBits(DEFAULT_USAGE_FLAGS);
@@ -211,10 +207,6 @@ GLConsumer::GLConsumer(const sp<IGraphicBufferConsumer>& bq, uint32_t texTarget,
     ALOGE_IF(!mBlitEngine, "\nCannot open copybit mBlitEngine=%p", mBlitEngine);
 
     sp<ISurfaceComposer> composer(ComposerService::getComposerService());
-          mGraphicBufferAlloc = composer->createGraphicBufferAlloc();
-    if (mGraphicBufferAlloc == 0) {
-        GLC_LOGE("createGraphicBufferAlloc() failed in SurfaceTexture()");
-    }
 #endif
 
     mConsumer->setConsumerUsageBits(DEFAULT_USAGE_FLAGS);
@@ -491,27 +483,23 @@ status_t GLConsumer::updateAndReleaseLocked(const BufferItem& item,
         }
         /* allocate convert buffer if needed */
         if (mBlitSlots[mNextBlitSlot] == NULL) {
-            if (mGraphicBufferAlloc == NULL) {
-
-                /* For some reason this is not being initialized in the constructor.
-                       So, we will create it here if it's null. */
-                sp<ISurfaceComposer> composer(ComposerService::getComposerService());
-                mGraphicBufferAlloc = composer->createGraphicBufferAlloc();
-            }
             status_t res;
             sp<GraphicBuffer> srcBuf = mSlots[slot].mGraphicBuffer;
-            sp<GraphicBuffer> dstBuf(mGraphicBufferAlloc->createGraphicBuffer(srcBuf->getWidth(),
-                                                                              srcBuf->getHeight(),
-                                                                              PIXEL_FORMAT_RGBA_8888,
-                                                                              srcBuf->getUsage(),
-                                                                              &res));
+            sp<GraphicBuffer> dstBuf = new GraphicBuffer(srcBuf->getWidth(),
+                                                         srcBuf->getHeight(),
+                                                         PIXEL_FORMAT_RGBA_8888,
+                                                         srcBuf->getUsage());
             if (dstBuf == 0) {
                 GLC_LOGE("updateAndRelease: createGraphicBuffer failed");
                 return NO_MEMORY;
             }
+
+            res = dstBuf->initCheck();
+
             if (res != NO_ERROR) {
                 GLC_LOGW("updateAndRelease: createGraphicBuffer error=%#04x", res);
             }
+
             mBlitSlots[mNextBlitSlot] = dstBuf;
         }
 
