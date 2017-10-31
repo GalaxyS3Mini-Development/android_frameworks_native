@@ -56,7 +56,7 @@ status_t MonitoredProducer::setAsyncMode(bool async) {
 }
 
 status_t MonitoredProducer::dequeueBuffer(int* slot, sp<Fence>* fence, uint32_t w, uint32_t h,
-                                          PixelFormat format, uint64_t usage,
+                                          PixelFormat format, uint32_t usage,
                                           uint64_t* outBufferAge,
                                           FrameEventHistoryDelta* outTimestamps) {
     return mProducer->dequeueBuffer(slot, fence, w, h, format, usage, outBufferAge, outTimestamps);
@@ -103,7 +103,7 @@ status_t MonitoredProducer::setSidebandStream(const sp<NativeHandle>& stream) {
 }
 
 void MonitoredProducer::allocateBuffers(uint32_t width, uint32_t height,
-        PixelFormat format, uint64_t usage) {
+        PixelFormat format, uint32_t usage) {
     mProducer->allocateBuffers(width, height, format, usage);
 }
 
@@ -143,6 +143,10 @@ void MonitoredProducer::getFrameTimestamps(FrameEventHistoryDelta* outDelta) {
 
 status_t MonitoredProducer::getUniqueId(uint64_t* outId) const {
     return mProducer->getUniqueId(outId);
+}
+
+status_t MonitoredProducer::getConsumerUsage(uint32_t* outUsage) const {
+    return mProducer->getConsumerUsage(outUsage);
 }
 
 IBinder* MonitoredProducer::onAsBinder() {

@@ -65,7 +65,7 @@ struct H2BGraphicBufferProducer : public ::android::H2BConverter<
     status_t setMaxDequeuedBufferCount(int maxDequeuedBuffers) override;
     status_t setAsyncMode(bool async) override;
     status_t dequeueBuffer(int* slot, sp<Fence>* fence, uint32_t w, uint32_t h,
-                           ::android::PixelFormat format, uint64_t usage, uint64_t* outBufferAge,
+                           ::android::PixelFormat format, uint32_t usage, uint64_t* outBufferAge,
                            FrameEventHistoryDelta* outTimestamps) override;
     status_t detachBuffer(int slot) override;
     status_t detachNextBuffer(sp<GraphicBuffer>* outBuffer, sp<Fence>* outFence)
@@ -83,7 +83,7 @@ struct H2BGraphicBufferProducer : public ::android::H2BConverter<
             override;
     status_t setSidebandStream(const sp<NativeHandle>& stream) override;
     void allocateBuffers(uint32_t width, uint32_t height,
-            ::android::PixelFormat format, uint64_t usage) override;
+            ::android::PixelFormat format, uint32_t usage) override;
     status_t allowAllocation(bool allow) override;
     status_t setGenerationNumber(uint32_t generationNumber) override;
     String8 getConsumerName() const override;
@@ -94,6 +94,7 @@ struct H2BGraphicBufferProducer : public ::android::H2BConverter<
           sp<Fence>* outFence, float outTransformMatrix[16]) override;
     void getFrameTimestamps(FrameEventHistoryDelta* outDelta) override;
     status_t getUniqueId(uint64_t* outId) const override;
+    status_t getConsumerUsage(uint32_t* outUsage) const override;
 };
 
 }  // namespace utils

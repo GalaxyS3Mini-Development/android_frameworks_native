@@ -349,7 +349,7 @@ status_t BufferQueueProducer::waitForFreeSlotThenRelock(FreeSlotCaller caller,
 
 status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* outFence,
                                             uint32_t width, uint32_t height, PixelFormat format,
-                                            uint64_t usage, uint64_t* outBufferAge,
+                                            uint32_t usage, uint64_t* outBufferAge,
                                             FrameEventHistoryDelta* outTimestamps) {
     ATRACE_CALL();
     { // Autolock scope
@@ -367,7 +367,8 @@ status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* ou
         }
     } // Autolock scope
 
-    BQ_LOGV("dequeueBuffer: w=%u h=%u format=%#x, usage=%#" PRIx64, width, height, format, usage);
+    BQ_LOGV("dequeueBuffer: w=%u h=%u format=%#x, usage=%#x", width, height,
+            format, usage);
 
     if ((width && !height) || (!width && height)) {
         BQ_LOGE("dequeueBuffer: invalid size: w=%u h=%u", width, height);
@@ -416,9 +417,11 @@ status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* ou
             // buffer. If this buffer would require reallocation to meet the
             // requested attributes, we free it and attempt to get another one.
             if (!mCore->mAllowAllocation) {
-                if (buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage)) {
+                if (buffer->needsReallocation(width, height, format,
+                        BQ_LAYER_COUNT, usage)) {
                     if (mCore->mSharedBufferSlot == found) {
-                        BQ_LOGE("dequeueBuffer: cannot re-allocate a sharedbuffer");
+                        BQ_LOGE("dequeueBuffer: cannot re-allocate a shared"
+                                "buffer");
                         return BAD_VALUE;
                     }
                     mCore->mFreeSlots.insert(found);
@@ -431,7 +434,8 @@ status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* ou
 
         const sp<GraphicBuffer>& buffer(mSlots[found].mGraphicBuffer);
         if (mCore->mSharedBufferSlot == found &&
-                buffer->needsReallocation(width, height, format, BQ_LAYER_COUNT, usage)) {
+                buffer->needsReallocation(width, height, format,
+                        BQ_LAYER_COUNT, usage)) {
             BQ_LOGE("dequeueBuffer: cannot re-allocate a shared"
                     "buffer");
 
@@ -465,7 +469,8 @@ status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp<android::Fence>* ou
         } else {
             // We add 1 because that will be the frame number when this buffer
             // is queued
-            mCore->mBufferAge = mCore->mFrameCounter + 1 - mSlots[found].mFrameNumber;
+            mCore->mBufferAge =
+                    mCore->mFrameCounter + 1 - mSlots[found].mFrameNumber;
         }
 
         BQ_LOGV("dequeueBuffer: setting buffer age to %" PRIu64,
@@ -1324,14 +1329,14 @@ status_t BufferQueueProducer::setSidebandStream(const sp<NativeHandle>& stream) 
 }
 
 void BufferQueueProducer::allocateBuffers(uint32_t width, uint32_t height,
-        PixelFormat format, uint64_t usage) {
+        PixelFormat format, uint32_t usage) {
     ATRACE_CALL();
     while (true) {
         size_t newBufferCount = 0;
         uint32_t allocWidth = 0;
         uint32_t allocHeight = 0;
         PixelFormat allocFormat = PIXEL_FORMAT_UNKNOWN;
-        uint64_t allocUsage = 0;
+        uint32_t allocUsage = 0;
         std::string allocName;
         { // Autolock scope
             Mutex::Autolock lock(mCore->mMutex);
@@ -1369,7 +1374,7 @@ void BufferQueueProducer::allocateBuffers(uint32_t width, uint32_t height,
 
             if (result != NO_ERROR) {
                 BQ_LOGE("allocateBuffers: failed to allocate buffer (%u x %u, format"
-                        " %u, usage %#" PRIx64 ")", width, height, format, usage);
+                        " %u, usage %u)", width, height, format, usage);
                 Mutex::Autolock lock(mCore->mMutex);
                 mCore->mIsAllocating = false;
                 mCore->mIsAllocatingCondition.broadcast();
@@ -1384,7 +1389,7 @@ void BufferQueueProducer::allocateBuffers(uint32_t width, uint32_t height,
             uint32_t checkHeight = height > 0 ? height : mCore->mDefaultHeight;
             PixelFormat checkFormat = format != 0 ?
                     format : mCore->mDefaultBufferFormat;
-            uint64_t checkUsage = usage | mCore->mConsumerUsageBits;
+            uint32_t checkUsage = usage | mCore->mConsumerUsageBits;
             if (checkWidth != allocWidth || checkHeight != allocHeight ||
                 checkFormat != allocFormat || checkUsage != allocUsage) {
                 // Something changed while we released the lock. Retry.
@@ -1553,6 +1558,14 @@ status_t BufferQueueProducer::getUniqueId(uint64_t* outId) const {
     BQ_LOGV("getUniqueId");
 
     *outId = mCore->mUniqueId;
+    return NO_ERROR;
+}
+
+status_t BufferQueueProducer::getConsumerUsage(uint32_t* outUsage) const {
+    BQ_LOGV("getConsumerUsage");
+
+    Mutex::Autolock lock(mCore->mMutex);
+    *outUsage = mCore->mConsumerUsageBits;
     return NO_ERROR;
 }
 
