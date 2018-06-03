@@ -11,10 +11,10 @@
 #include <cutils/android_filesystem_config.h>
 #include <cutils/multiuser.h>
 
-#include <selinux/android.h>
-#include <selinux/avc.h>
-
 #include "binder.h"
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 #ifdef VENDORSERVICEMANAGER
 #define LOG_TAG "VendorServiceManager"
@@ -58,55 +58,19 @@ int str16eq(const uint16_t *a, const char *b)
     return 1;
 }
 
-static char *service_manager_context;
-static struct selabel_handle* sehandle;
-
-static bool check_mac_perms(pid_t spid, uid_t uid, const char *tctx, const char *perm, const char *name)
+static int check_mac_perms(pid_t spid, uid_t uid, const char *tctx, const char *perm, const char *name)
 {
-    char *sctx = NULL;
-    const char *class = "service_manager";
-    bool allowed;
-    struct audit_data ad;
-
-    if (getpidcon(spid, &sctx) < 0) {
-        ALOGE("SELinux: getpidcon(pid=%d) failed to retrieve pid context.\n", spid);
-        return false;
-    }
-
-    ad.pid = spid;
-    ad.uid = uid;
-    ad.name = name;
-
-    int result = selinux_check_access(sctx, tctx, class, perm, (void *) &ad);
-    allowed = (result == 0);
-
-    freecon(sctx);
-    return allowed;
+    return 1;
 }
 
-static bool check_mac_perms_from_getcon(pid_t spid, uid_t uid, const char *perm)
+static int check_mac_perms_from_getcon(pid_t spid, uid_t uid, const char *perm)
 {
-    return check_mac_perms(spid, uid, service_manager_context, perm, NULL);
+    return 1;
 }
 
-static bool check_mac_perms_from_lookup(pid_t spid, uid_t uid, const char *perm, const char *name)
+static int check_mac_perms_from_lookup(pid_t spid, uid_t uid, const char *perm, const char *name)
 {
-    bool allowed;
-    char *tctx = NULL;
-
-    if (!sehandle) {
-        ALOGE("SELinux: Failed to find sehandle. Aborting service_manager.\n");
-        abort();
-    }
-
-    if (selabel_lookup(sehandle, &tctx, name, 0) != 0) {
-        ALOGE("SELinux: No match for %s in service_contexts.\n", name);
-        return false;
-    }
-
-    allowed = check_mac_perms(spid, uid, tctx, perm, name);
-    freecon(tctx);
-    return allowed;
+    return 1;
 }
 
 static int svc_can_register(const uint16_t *name, size_t name_len, pid_t spid, uid_t uid)
@@ -285,17 +249,6 @@ int svcmgr_handler(struct binder_state *bs,
         return -1;
     }
 
-    if (sehandle && selinux_status_updated() > 0) {
-#ifdef VENDORSERVICEMANAGER
-        struct selabel_handle *tmp_sehandle = selinux_android_vendor_service_context_handle();
-#else
-        struct selabel_handle *tmp_sehandle = selinux_android_service_context_handle();
-#endif
-        if (tmp_sehandle) {
-            selabel_close(sehandle);
-            sehandle = tmp_sehandle;
-        }
-    }
 
     switch(txn->code) {
     case SVC_MGR_GET_SERVICE:
@@ -358,23 +311,14 @@ int svcmgr_handler(struct binder_state *bs,
 }
 
 
-static int audit_callback(void *data, __unused security_class_t cls, char *buf, size_t len)
+static int audit_callback(void *data, char *buf, size_t len)
 {
-    struct audit_data *ad = (struct audit_data *)data;
-
-    if (!ad || !ad->name) {
-        ALOGE("No service manager audit data");
-        return 0;
-    }
-
-    snprintf(buf, len, "service=%s pid=%d uid=%d", ad->name, ad->pid, ad->uid);
     return 0;
 }
 
 int main(int argc, char** argv)
 {
     struct binder_state *bs;
-    union selinux_callback cb;
     char *driver;
 
     if (argc > 1) {
@@ -387,7 +331,7 @@ int main(int argc, char** argv)
     if (!bs) {
 #ifdef VENDORSERVICEMANAGER
         ALOGW("failed to open binder driver %s\n", driver);
-        while (true) {
+        while (1) {
             sleep(UINT_MAX);
         }
 #else
@@ -399,28 +343,6 @@ int main(int argc, char** argv)
     if (binder_become_context_manager(bs)) {
         ALOGE("cannot become context manager (%s)\n", strerror(errno));
         return -1;
-    }
-
-    cb.func_audit = audit_callback;
-    selinux_set_callback(SELINUX_CB_AUDIT, cb);
-    cb.func_log = selinux_log_callback;
-    selinux_set_callback(SELINUX_CB_LOG, cb);
-
-#ifdef VENDORSERVICEMANAGER
-    sehandle = selinux_android_vendor_service_context_handle();
-#else
-    sehandle = selinux_android_service_context_handle();
-#endif
-    selinux_status_open(true);
-
-    if (sehandle == NULL) {
-        ALOGE("SELinux: Failed to acquire sehandle. Aborting.\n");
-        abort();
-    }
-
-    if (getcon(&service_manager_context) != 0) {
-        ALOGE("SELinux: Failed to acquire service_manager context. Aborting.\n");
-        abort();
     }
 
 
