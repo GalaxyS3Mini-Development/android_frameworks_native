@@ -161,7 +161,6 @@ public:
     status_t getHdrSupport(bool* supported);
 
     status_t getUniqueId(uint64_t* outId) const;
-    status_t getConsumerUsage(uint64_t* outUsage) const;
 
     // Returns the CLOCK_MONOTONIC start time of the last dequeueBuffer call
     nsecs_t getLastDequeueStartTime() const;
@@ -228,7 +227,6 @@ private:
     int dispatchGetFrameTimestamps(va_list args);
     int dispatchGetWideColorSupport(va_list args);
     int dispatchGetHdrSupport(va_list args);
-    int dispatchGetConsumerUsage64(va_list args);
 
 protected:
     virtual int dequeueBuffer(ANativeWindowBuffer** buffer, int* fenceFd);

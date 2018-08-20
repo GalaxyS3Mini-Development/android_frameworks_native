@@ -619,7 +619,7 @@ public:
     // full 64-bit usage flags, rather than the truncated 32-bit usage flags
     // returned by querying the now deprecated
     // NATIVE_WINDOW_CONSUMER_USAGE_BITS attribute.
-    virtual status_t getConsumerUsage(uint64_t* outUsage) const = 0;
+    virtual status_t getConsumerUsage(uint32_t* outUsage) const = 0;
 
     // Static method exports any IGraphicBufferProducer object to a parcel. It
     // handles null producer as well.

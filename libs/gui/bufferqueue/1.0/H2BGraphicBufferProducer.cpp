@@ -21,8 +21,6 @@
 #include <gui/bufferqueue/1.0/H2BGraphicBufferProducer.h>
 #include <gui/bufferqueue/1.0/B2HProducerListener.h>
 
-#include <system/window.h>
-
 namespace android {
 namespace hardware {
 namespace graphics {

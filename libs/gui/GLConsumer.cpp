@@ -1155,7 +1155,7 @@ void GLConsumer::abandonLocked() {
     ConsumerBase::abandonLocked();
 }
 
-status_t GLConsumer::setConsumerUsageBits(uint64_t usage) {
+status_t GLConsumer::setConsumerUsageBits(uint32_t usage) {
     return ConsumerBase::setConsumerUsageBits(usage | DEFAULT_USAGE_FLAGS);
 }
 
