@@ -60,23 +60,23 @@ public:
         return write(parcel, static_cast<typename std::underlying_type<E>::type>(e));
     }
     template <typename T>
-    typename std::enable_if<std::is_base_of<Flattenable<T>, T>::value, status_t>::type read(
+    typename std::enable_if<std::is_base_of<Flattenable, T>::value, status_t>::type read(
             const Parcel& parcel, T* t) const {
         return callParcel("read(Flattenable)", [&]() { return parcel.read(*t); });
     }
     template <typename T>
-    typename std::enable_if<std::is_base_of<Flattenable<T>, T>::value, status_t>::type write(
+    typename std::enable_if<std::is_base_of<Flattenable, T>::value, status_t>::type write(
             Parcel* parcel, const T& t) const {
         return callParcel("write(Flattenable)", [&]() { return parcel->write(t); });
     }
     template <typename T>
-    typename std::enable_if<std::is_base_of<Flattenable<T>, T>::value, status_t>::type read(
+    typename std::enable_if<std::is_base_of<Flattenable, T>::value, status_t>::type read(
             const Parcel& parcel, sp<T>* t) const {
         *t = new T{};
         return callParcel("read(sp<Flattenable>)", [&]() { return parcel.read(*(t->get())); });
     }
     template <typename T>
-    typename std::enable_if<std::is_base_of<Flattenable<T>, T>::value, status_t>::type write(
+    typename std::enable_if<std::is_base_of<Flattenable, T>::value, status_t>::type write(
             Parcel* parcel, const sp<T>& t) const {
         return callParcel("write(sp<Flattenable>)", [&]() { return parcel->write(*(t.get())); });
     }

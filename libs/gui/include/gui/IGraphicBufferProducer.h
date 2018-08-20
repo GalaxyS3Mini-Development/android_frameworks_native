@@ -384,7 +384,11 @@ public:
         HdrMetadata hdrMetadata;
     };
 
+#ifdef STE_HARDWARE
+    struct QueueBufferOutput : public Flattenable {
+#else
     struct QueueBufferOutput : public Flattenable<QueueBufferOutput> {
+#endif
         QueueBufferOutput() = default;
 
         // Moveable.

@@ -242,7 +242,11 @@ private:
 // through Binder.
 // Although this may be sent multiple times for the same frame as new
 // timestamps are set, Fences only need to be sent once.
+#ifdef STE_HARDWARE
+class FrameEventsDelta : public Flattenable {
+#else
 class FrameEventsDelta : public Flattenable<FrameEventsDelta> {
+#endif
 friend class ProducerFrameEventHistory;
 public:
     FrameEventsDelta() = default;
@@ -300,8 +304,13 @@ private:
 
 // A collection of updates from consumer to producer that can be sent
 // through Binder.
+#ifdef STE_HARDWARE
+class FrameEventHistoryDelta
+        : public Flattenable {
+#else
 class FrameEventHistoryDelta
         : public Flattenable<FrameEventHistoryDelta> {
+#endif
 
 friend class ConsumerFrameEventHistory;
 friend class ProducerFrameEventHistory;

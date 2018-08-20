@@ -20,6 +20,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
+#include <gui/BufferQueue.h>
 #include <gui/BufferQueueDefs.h>
 #include <gui/ConsumerBase.h>
 
