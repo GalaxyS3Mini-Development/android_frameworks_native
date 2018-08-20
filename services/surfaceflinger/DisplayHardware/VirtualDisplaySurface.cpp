@@ -346,10 +346,10 @@ status_t VirtualDisplaySurface::dequeueBuffer(Source source,
             mSource[source]->cancelBuffer(*sslot, *fence);
             return result;
         }
-        VDS_LOGV("dequeueBuffer(%s): buffers[%d]=%p fmt=%d usage=%#" PRIx64,
+        /*VDS_LOGV("dequeueBuffer(%s): buffers[%d]=%p fmt=%d usage=%#" PRIx64,
                 dbgSourceStr(source), pslot, mProducerBuffers[pslot].get(),
                 mProducerBuffers[pslot]->getPixelFormat(),
-                mProducerBuffers[pslot]->getUsage());
+                mProducerBuffers[pslot]->getUsage());*/
     }
 
     return result;
@@ -397,12 +397,12 @@ status_t VirtualDisplaySurface::dequeueBuffer(int* pslot, sp<Fence>* fence, uint
                 (format != 0 && format != buf->getPixelFormat()) ||
                 (w != 0 && w != mSinkBufferWidth) ||
                 (h != 0 && h != mSinkBufferHeight)) {
-            VDS_LOGV("dequeueBuffer: dequeueing new output buffer: "
+            /*VDS_LOGV("dequeueBuffer: dequeueing new output buffer: "
                     "want %dx%d fmt=%d use=%#" PRIx64 ", "
                     "have %dx%d fmt=%d use=%#" PRIx64,
                     w, h, format, usage,
                     mSinkBufferWidth, mSinkBufferHeight,
-                    buf->getPixelFormat(), buf->getUsage());
+                    buf->getPixelFormat(), buf->getUsage());*/
             mOutputFormat = format;
             setOutputUsage(usage);
             result = refreshOutputBuffer();

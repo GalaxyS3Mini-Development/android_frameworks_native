@@ -82,7 +82,7 @@ public:
     // Create a GraphicBuffer by allocating and managing a buffer internally.
     // This function is privileged.  See reallocate for details.
     GraphicBuffer(uint32_t inWidth, uint32_t inHeight, PixelFormat inFormat,
-            uint32_t inLayerCount, uint64_t inUsage,
+            uint32_t inLayerCount, uint32_t inUsage,
             std::string requestorName = "<Unknown>");
 
     // Create a GraphicBuffer from an existing handle.
@@ -121,15 +121,9 @@ public:
     GraphicBuffer(const native_handle_t* handle, HandleWrapMethod method,
             uint32_t width, uint32_t height,
             PixelFormat format, uint32_t layerCount,
-            uint64_t usage, uint32_t stride);
+            uint32_t usage, uint32_t stride);
 
     // These functions are deprecated because they only take 32 bits of usage
-    GraphicBuffer(const native_handle_t* handle, HandleWrapMethod method,
-            uint32_t width, uint32_t height,
-            PixelFormat format, uint32_t layerCount,
-            uint32_t usage, uint32_t stride)
-        : GraphicBuffer(handle, method, width, height, format, layerCount,
-                static_cast<uint64_t>(usage), stride) {}
     GraphicBuffer(uint32_t inWidth, uint32_t inHeight, PixelFormat inFormat,
             uint32_t inLayerCount, uint32_t inUsage, uint32_t inStride,
             native_handle_t* inHandle, bool keepOwnership);
@@ -142,7 +136,7 @@ public:
     uint32_t getWidth() const           { return static_cast<uint32_t>(width); }
     uint32_t getHeight() const          { return static_cast<uint32_t>(height); }
     uint32_t getStride() const          { return static_cast<uint32_t>(stride); }
-    uint64_t getUsage() const           { return usage; }
+    uint32_t getUsage() const           { return static_cast<uint32_t>(usage); }
     PixelFormat getPixelFormat() const  { return format; }
     uint32_t getLayerCount() const      { return static_cast<uint32_t>(layerCount); }
     Rect getBounds() const              { return Rect(width, height); }
@@ -157,10 +151,10 @@ public:
     // device or service, which usually involves adding suitable selinux
     // rules.
     status_t reallocate(uint32_t inWidth, uint32_t inHeight,
-            PixelFormat inFormat, uint32_t inLayerCount, uint64_t inUsage);
+            PixelFormat inFormat, uint32_t inLayerCount, uint32_t inUsage);
 
     bool needsReallocation(uint32_t inWidth, uint32_t inHeight,
-            PixelFormat inFormat, uint32_t inLayerCount, uint64_t inUsage);
+            PixelFormat inFormat, uint32_t inLayerCount, uint32_t inUsage);
 
     status_t lock(uint32_t inUsage, void** vaddr);
     status_t lock(uint32_t inUsage, const Rect& rect, void** vaddr);
@@ -229,7 +223,7 @@ private:
     status_t initWithHandle(const native_handle_t* handle,
             HandleWrapMethod method, uint32_t width, uint32_t height,
             PixelFormat format, uint32_t layerCount,
-            uint64_t usage, uint32_t stride);
+            uint32_t usage, uint32_t stride);
 
     void free_handle();
 
