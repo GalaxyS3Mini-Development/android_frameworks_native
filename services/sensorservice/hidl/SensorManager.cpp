@@ -142,12 +142,14 @@ sp<Looper> SensorManager::getLooper() {
         mStopThread = false;
         std::thread pollThread{[&stopThread = mStopThread, looper = mLooper, javaVm = mJavaVm] {
 
+#ifndef HARDWARE_FIFO_SENSOR_SERVICE
             struct sched_param p = {0};
             p.sched_priority = 10;
             if (sched_setscheduler(0 /* current thread*/, SCHED_FIFO, &p) != 0) {
                 LOG(WARNING) << "Could not use SCHED_FIFO for looper thread: "
                         << strerror(errno);
             }
+#endif
 
             // set looper
             Looper::setForThread(looper);

@@ -30,6 +30,7 @@ cc_library_shared {
         "-Wall",
         "-Werror",
         "-Wextra",
+        "-DHARDWARE_FIFO_SENSOR_SERVICE",
         "-fvisibility=hidden"
     ],
 
