@@ -306,9 +306,13 @@ public:
     //              * the slot was not in the dequeued state
     //              * the slot was enqueued without requesting a buffer
     //              * crop rect is out of bounds of the buffer dimensions
-
+#ifdef STE_HARDWARE
+    struct QueueBufferInput : public Flattenable {
+        friend class Flattenable;
+#else
     struct QueueBufferInput : public Flattenable<QueueBufferInput> {
         friend class Flattenable<QueueBufferInput>;
+#endif
         explicit inline QueueBufferInput(const Parcel& parcel);
 
         // timestamp - a monotonically increasing value in nanoseconds
