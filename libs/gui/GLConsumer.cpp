@@ -45,6 +45,9 @@
 #include <utils/String8.h>
 #include <utils/Trace.h>
 
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+
 extern "C" EGLAPI const char* eglQueryStringImplementationANDROID(EGLDisplay dpy, EGLint name);
 #define CROP_EXT_STR "EGL_ANDROID_image_crop"
 #define PROT_CONTENT_EXT_STR "EGL_EXT_protected_content"

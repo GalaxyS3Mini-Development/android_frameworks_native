@@ -17,6 +17,8 @@
 #ifndef ANDROID_PARCEL_H
 #define ANDROID_PARCEL_H
 
+#pragma GCC diagnostic ignored "-Wweak-vtables"
+
 #include <string>
 #include <vector>
 
