@@ -368,7 +368,7 @@ sp<GraphicBuffer> GLConsumer::getDebugTexImageBuffer() {
         // continues to use it.
         sp<GraphicBuffer> buffer = new GraphicBuffer(
                 kDebugData.width, kDebugData.height, PIXEL_FORMAT_RGBA_8888,
-                GraphicBuffer::USAGE_SW_WRITE_RARELY,
+                static_cast<uint64_t>(GraphicBuffer::USAGE_SW_WRITE_RARELY),
                 "[GLConsumer debug texture]");
         uint32_t* bits;
         buffer->lock(GraphicBuffer::USAGE_SW_WRITE_RARELY, reinterpret_cast<void**>(&bits));
@@ -1268,9 +1268,9 @@ status_t GLConsumer::EglImage::createIfNeeded(EGLDisplay eglDisplay,
         mEglDisplay = EGL_NO_DISPLAY;
         mCropRect.makeInvalid();
         const sp<GraphicBuffer>& buffer = mGraphicBuffer;
-        ALOGE("Failed to create image. size=%ux%u st=%u usage=%#" PRIx64 " fmt=%d",
+        ALOGE("Failed to create image. size=%ux%u st=%u fmt=%d",
             buffer->getWidth(), buffer->getHeight(), buffer->getStride(),
-            buffer->getUsage(), buffer->getPixelFormat());
+            buffer->getPixelFormat());
         return UNKNOWN_ERROR;
     }
 
