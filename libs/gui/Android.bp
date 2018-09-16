@@ -195,4 +195,3 @@ cc_library_shared {
     defaults: ["libgui_defaults"]
 }
 
-subdirs = ["tests"]
