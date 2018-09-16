@@ -762,11 +762,11 @@ static inline int native_window_set_buffers_data_space(
  * buffers by default.
  */
 static inline int native_window_set_buffers_smpte2086_metadata(
-        struct ANativeWindow* window,
-        const struct android_smpte2086_metadata* metadata)
+        struct ANativeWindow* /*window*/,
+        const struct android_smpte2086_metadata* /*metadata*/)
 {
-    return window->perform(window, NATIVE_WINDOW_SET_BUFFERS_SMPTE2086_METADATA,
-            metadata);
+    return 0; /*window->perform(window, NATIVE_WINDOW_SET_BUFFERS_SMPTE2086_METADATA,
+            metadata);*/
 }
 
 /*
@@ -780,11 +780,11 @@ static inline int native_window_set_buffers_smpte2086_metadata(
  * buffers by default.
  */
 static inline int native_window_set_buffers_cta861_3_metadata(
-        struct ANativeWindow* window,
-        const struct android_cta861_3_metadata* metadata)
+        struct ANativeWindow* /*window*/,
+        const struct android_cta861_3_metadata* /*metadata*/)
 {
-    return window->perform(window, NATIVE_WINDOW_SET_BUFFERS_CTA861_3_METADATA,
-            metadata);
+    return 0; /*window->perform(window, NATIVE_WINDOW_SET_BUFFERS_CTA861_3_METADATA,
+            metadata);*/
 }
 
 /*
