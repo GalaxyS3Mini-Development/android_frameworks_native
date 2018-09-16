@@ -497,8 +497,8 @@ VkResult CreateAndroidSurfaceKHR(
 
     surface->window = pCreateInfo->window;
     surface->swapchain_handle = VK_NULL_HANDLE;
-    int err = native_window_get_consumer_usage(surface->window.get(),
-                                               &surface->consumer_usage);
+    int err = -EINVAL; /*native_window_get_consumer_usage(surface->window.get(),
+                                               &surface->consumer_usage);*/
     if (err != android::NO_ERROR) {
         ALOGE("native_window_get_consumer_usage() failed: %s (%d)",
               strerror(-err), err);
@@ -1166,7 +1166,7 @@ VkResult CreateSwapchainKHR(VkDevice device,
         }
     }
 
-    err = native_window_set_usage(surface.window.get(), legacy_usage);
+    err = native_window_set_usage(surface.window.get(), static_cast<int>(legacy_usage));
     if (err != 0) {
         // TODO(jessehall): Improve error reporting. Can we enumerate possible
         // errors and translate them to valid Vulkan result codes?
