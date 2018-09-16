@@ -42,10 +42,18 @@ class GraphicBufferMapper;
 // ===========================================================================
 
 class GraphicBuffer
-    : public ANativeObjectBase<ANativeWindowBuffer, GraphicBuffer, RefBase>,
+    : public ANativeObjectBase< ANativeWindowBuffer, GraphicBuffer,
+#ifdef STE_HARDWARE
+    LightRefBase<GraphicBuffer> >,
+      public Flattenable
+#else
+    RefBase >,
       public Flattenable<GraphicBuffer>
+#endif
 {
+#ifndef STE_HARDWARE
     friend class Flattenable<GraphicBuffer>;
+#endif
 public:
 
     enum {
@@ -84,6 +92,10 @@ public:
     GraphicBuffer(uint32_t inWidth, uint32_t inHeight, PixelFormat inFormat,
             uint32_t inLayerCount, uint32_t inUsage,
             std::string requestorName = "<Unknown>");
+
+    GraphicBuffer(uint32_t inWidth, uint32_t inHeight, PixelFormat inFormat,
+            uint32_t inUsage, uint32_t inStride, native_handle_t* inHandle,
+            bool keepOwnership);
 
     // Create a GraphicBuffer from an existing handle.
     enum HandleWrapMethod : uint8_t {
@@ -130,6 +142,9 @@ public:
     GraphicBuffer(uint32_t inWidth, uint32_t inHeight, PixelFormat inFormat,
             uint32_t inUsage, std::string requestorName = "<Unknown>");
 
+    // create a buffer from an existing ANativeWindowBuffer
+    GraphicBuffer(ANativeWindowBuffer* buffer, bool keepOwnership);
+
     // return status
     status_t initCheck() const;
 
@@ -166,8 +181,10 @@ public:
     status_t lockAsync(uint32_t inUsage, void** vaddr, int fenceFd);
     status_t lockAsync(uint32_t inUsage, const Rect& rect, void** vaddr,
             int fenceFd);
+/*
     status_t lockAsync(uint64_t inProducerUsage, uint64_t inConsumerUsage,
             const Rect& rect, void** vaddr, int fenceFd);
+*/
     status_t lockAsyncYCbCr(uint32_t inUsage, android_ycbcr *ycbcr,
             int fenceFd);
     status_t lockAsyncYCbCr(uint32_t inUsage, const Rect& rect,
@@ -218,7 +235,7 @@ private:
 
     status_t initWithSize(uint32_t inWidth, uint32_t inHeight,
             PixelFormat inFormat, uint32_t inLayerCount,
-            uint64_t inUsage, std::string requestorName);
+            uint32_t inUsage);
 
     status_t initWithHandle(const native_handle_t* handle,
             HandleWrapMethod method, uint32_t width, uint32_t height,

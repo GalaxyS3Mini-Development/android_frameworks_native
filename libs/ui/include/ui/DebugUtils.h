@@ -16,21 +16,14 @@
 
 #pragma once
 
-#include <ui/GraphicTypes.h>
+#include <system/graphics.h>
 #include <ui/PixelFormat.h>
 
 #include <string>
-
-namespace android {
-class Rect;
-}
 
 std::string decodeStandard(android_dataspace dataspace);
 std::string decodeTransfer(android_dataspace dataspace);
 std::string decodeRange(android_dataspace dataspace);
 std::string dataspaceDetails(android_dataspace dataspace);
-std::string decodeColorMode(android::ui::ColorMode colormode);
-std::string decodeColorTransform(android_color_transform colorTransform);
+std::string decodeColorMode(android_color_mode colormode);
 std::string decodePixelFormat(android::PixelFormat format);
-std::string decodeRenderIntent(android::ui::RenderIntent renderIntent);
-std::string to_string(const android::Rect& rect);

@@ -42,7 +42,11 @@ public:
     // consistent for all steps of the flattening process.
     //
     // Not thread safe.
+#ifdef STE_HARDWARE
+    struct Snapshot : public Flattenable {
+#else
     struct Snapshot : public Flattenable<Snapshot> {
+#endif
         enum class State {
             EMPTY,
             FENCE,
