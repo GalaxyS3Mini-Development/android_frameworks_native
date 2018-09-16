@@ -22,7 +22,7 @@ cc_defaults {
     clang: true,
     cflags: [
         "-Wall",
-        "-Werror",
+        "-Wno-format",
     ],
     cppflags: [
         "-Weverything",

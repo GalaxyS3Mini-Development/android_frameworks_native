@@ -116,7 +116,7 @@ status_t BufferHubConsumer::setDefaultBufferDataSpace(android_dataspace /*defaul
     return INVALID_OPERATION;
 }
 
-status_t BufferHubConsumer::setConsumerUsageBits(uint64_t /*usage*/) {
+status_t BufferHubConsumer::setConsumerUsageBits(uint32_t /*usage*/) {
     ALOGE("BufferHubConsumer::setConsumerUsageBits: not implemented.");
     return INVALID_OPERATION;
 }

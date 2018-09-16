@@ -90,7 +90,7 @@ public:
     status_t setDefaultBufferDataSpace(android_dataspace defaultDataSpace);
 
     // See IGraphicBufferConsumer::setConsumerUsageBits
-    status_t setConsumerUsageBits(uint64_t usage);
+    status_t setConsumerUsageBits(uint32_t usage);
 
     // See IGraphicBufferConsumer::setTransformHint
     status_t setTransformHint(uint32_t hint);

@@ -75,7 +75,7 @@ public:
     status_t setDefaultBufferDataSpace(android_dataspace defaultDataSpace) override;
 
     // See |IGraphicBufferConsumer::setConsumerUsageBits|
-    status_t setConsumerUsageBits(uint64_t usage) override;
+    status_t setConsumerUsageBits(uint32_t usage) override;
 
     // See |IGraphicBufferConsumer::setConsumerIsProtected|
     status_t setConsumerIsProtected(bool isProtected) override;

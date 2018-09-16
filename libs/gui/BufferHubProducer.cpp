@@ -133,7 +133,7 @@ status_t BufferHubProducer::setAsyncMode(bool async) {
 }
 
 status_t BufferHubProducer::dequeueBuffer(int* out_slot, sp<Fence>* out_fence, uint32_t width,
-                                          uint32_t height, PixelFormat format, uint64_t usage,
+                                          uint32_t height, PixelFormat format, uint32_t usage,
                                           uint64_t* /*outBufferAge*/,
                                           FrameEventHistoryDelta* /* out_timestamps */) {
     ALOGV("dequeueBuffer: w=%u, h=%u, format=%d, usage=%" PRIu64, width, height, format, usage);
@@ -522,7 +522,7 @@ status_t BufferHubProducer::setSidebandStream(const sp<NativeHandle>& stream) {
 }
 
 void BufferHubProducer::allocateBuffers(uint32_t /* width */, uint32_t /* height */,
-                                        PixelFormat /* format */, uint64_t /* usage */) {
+                                        PixelFormat /* format */, uint32_t /* usage */) {
     // TODO(jwcai) |allocateBuffers| aims to preallocate up to the maximum number
     // of buffers permitted by the current BufferQueue configuration (aka
     // |max_buffer_count_|).
@@ -595,7 +595,7 @@ status_t BufferHubProducer::getUniqueId(uint64_t* out_id) const {
     return NO_ERROR;
 }
 
-status_t BufferHubProducer::getConsumerUsage(uint64_t* out_usage) const {
+status_t BufferHubProducer::getConsumerUsage(uint32_t* out_usage) const {
     ALOGV(__FUNCTION__);
 
     // same value as returned by querying NATIVE_WINDOW_CONSUMER_USAGE_BITS
@@ -632,7 +632,7 @@ status_t BufferHubProducer::TakeAsParcelable(ProducerQueueParcelable* out_parcel
 }
 
 status_t BufferHubProducer::AllocateBuffer(uint32_t width, uint32_t height, uint32_t layer_count,
-                                           PixelFormat format, uint64_t usage) {
+                                           PixelFormat format, uint32_t usage) {
     auto status = queue_->AllocateBuffer(width, height, layer_count, uint32_t(format), usage);
     if (!status) {
         ALOGE("BufferHubProducer::AllocateBuffer: Failed to allocate buffer: %s",

@@ -247,7 +247,7 @@ status_t ConsumerBase::setDefaultBufferDataSpace(
     return mConsumer->setDefaultBufferDataSpace(defaultDataSpace);
 }
 
-status_t ConsumerBase::setConsumerUsageBits(uint64_t usage) {
+status_t ConsumerBase::setConsumerUsageBits(uint32_t usage) {
     Mutex::Autolock lock(mMutex);
     if (mAbandoned) {
         CB_LOGE("setConsumerUsageBits: ConsumerBase is abandoned!");

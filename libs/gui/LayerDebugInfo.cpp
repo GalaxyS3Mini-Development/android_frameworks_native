@@ -121,8 +121,6 @@ std::string to_string(const LayerDebugInfo& info) {
             info.mLayerStack, info.mZ, static_cast<double>(info.mX), static_cast<double>(info.mY),
             info.mWidth, info.mHeight);
 
-    result.appendFormat("crop=%s, finalCrop=%s, ",
-            to_string(info.mCrop).c_str(), to_string(info.mFinalCrop).c_str());
     result.appendFormat("isOpaque=%1d, invalidate=%1d, ", info.mIsOpaque, info.mContentDirty);
     result.appendFormat("dataspace=%s, ", dataspaceDetails(info.mDataSpace).c_str());
     result.appendFormat("pixelformat=%s, ", decodePixelFormat(info.mPixelFormat).c_str());

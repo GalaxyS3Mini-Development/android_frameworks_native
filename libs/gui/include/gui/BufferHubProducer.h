@@ -60,7 +60,7 @@ public:
 
     // See |IGraphicBufferProducer::dequeueBuffer|
     status_t dequeueBuffer(int* out_slot, sp<Fence>* out_fence, uint32_t width, uint32_t height,
-                           PixelFormat format, uint64_t usage, uint64_t* outBufferAge,
+                           PixelFormat format, uint32_t usage, uint64_t* outBufferAge,
                            FrameEventHistoryDelta* outTimestamps) override;
 
     // See |IGraphicBufferProducer::detachBuffer|
@@ -94,7 +94,7 @@ public:
 
     // See |IGraphicBufferProducer::allocateBuffers|
     void allocateBuffers(uint32_t width, uint32_t height, PixelFormat format,
-                         uint64_t usage) override;
+                         uint32_t usage) override;
 
     // See |IGraphicBufferProducer::allowAllocation|
     status_t allowAllocation(bool allow) override;
@@ -125,7 +125,7 @@ public:
     status_t getUniqueId(uint64_t* out_id) const override;
 
     // See |IGraphicBufferProducer::getConsumerUsage|
-    status_t getConsumerUsage(uint64_t* out_usage) const override;
+    status_t getConsumerUsage(uint32_t* out_usage) const override;
 
     // Takes out the current producer as a binder parcelable object. Note that the
     // producer must be disconnected to be exportable. After successful export,
@@ -156,7 +156,7 @@ private:
     // Allocate new buffer through BufferHub and add it into |queue_| for
     // bookkeeping.
     status_t AllocateBuffer(uint32_t width, uint32_t height, uint32_t layer_count,
-                            PixelFormat format, uint64_t usage);
+                            PixelFormat format, uint32_t usage);
 
     // Remove a buffer via BufferHubRPC.
     status_t RemoveBuffer(size_t slot);
