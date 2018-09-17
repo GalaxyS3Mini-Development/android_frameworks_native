@@ -33,6 +33,7 @@ staticLibraries = [
     "libbroadcastring",
     "libvr_manager",
     "libbroadcastring",
+    "libsurfaceflingerincludes",
 ]
 
 sharedLibraries = [
@@ -65,7 +66,6 @@ headerLibraries = [
     "android.hardware.graphics.composer@2.1-command-buffer",
     "android.hardware.graphics.composer@2.2-command-buffer",
     "libdvr_headers",
-    "libsurfaceflinger_headers",
 ]
 
 cc_library_static {
