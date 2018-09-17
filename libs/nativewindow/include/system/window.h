@@ -751,6 +751,7 @@ static inline int native_window_set_buffers_data_space(
             dataSpace);
 }
 
+#ifdef __cplusplus
 /*
  * native_window_set_buffers_smpte2086_metadata(..., metadata)
  * All buffers queued after this call will be associated with the SMPTE
@@ -786,6 +787,7 @@ static inline int native_window_set_buffers_cta861_3_metadata(
     return 0; /*window->perform(window, NATIVE_WINDOW_SET_BUFFERS_CTA861_3_METADATA,
             metadata);*/
 }
+#endif
 
 /*
  * native_window_set_buffers_transform(..., int transform)
