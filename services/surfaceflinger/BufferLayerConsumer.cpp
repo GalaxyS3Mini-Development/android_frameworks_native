@@ -633,7 +633,7 @@ status_t BufferLayerConsumer::Image::createIfNeeded(const Rect& imageCrop) {
         mCropHeight = 0;
 
         const sp<GraphicBuffer>& buffer = mGraphicBuffer;
-        ALOGE("Failed to create image. size=%ux%u st=%u usage=%#" PRIx64 " fmt=%d",
+        ALOGE("Failed to create image. size=%ux%u st=%u usage=%#" PRIx32 " fmt=%d",
               buffer->getWidth(), buffer->getHeight(), buffer->getStride(), buffer->getUsage(),
               buffer->getPixelFormat());
     }
