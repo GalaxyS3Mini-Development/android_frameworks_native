@@ -60,7 +60,7 @@ cc_library {
         "liblog",
         "libutils",
         "libui",
-        "android.hardware.graphics.common@1.1",
+        "android.hardware.graphics.common@1.0",
     ],
 
     static_libs: [
@@ -88,5 +88,3 @@ llndk_library {
     unversioned: true,
     export_include_dirs: ["include"],
 }
-
-subdirs = ["tests"]

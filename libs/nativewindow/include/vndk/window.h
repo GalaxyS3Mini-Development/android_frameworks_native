@@ -61,7 +61,7 @@ int ANativeWindow_OemStorageGet(ANativeWindow* window, uint32_t slot, intptr_t* 
  */
 int ANativeWindow_setSwapInterval(ANativeWindow* window, int interval);
 
-
+#ifndef FRAMEBUFFER_NATIVEWINDOW
 /*
  * queries that can be used with ANativeWindow_query() and ANativeWindow_queryf()
  */
@@ -165,6 +165,7 @@ enum ANativeWindowQuery {
     /* vertical resolution in DPI. value is float, use queryf() */
     ANATIVEWINDOW_QUERY_YDPI = 0x10003,
 };
+#endif
 
 typedef enum ANativeWindowQuery ANativeWindowQuery;
 
@@ -303,6 +304,20 @@ int ANativeWindow_setBuffersFormat(ANativeWindow* window, int format);
  * reset when the position is set.
  */
 int ANativeWindow_setBuffersTimestamp(ANativeWindow* window, int64_t timestamp);
+
+
+/*
+ * All buffers queued after this call will be associated with the dataSpace
+ * parameter specified.
+ *
+ * dataSpace specifies additional information about the buffer that's dependent
+ * on the buffer format and the endpoints. For example, it can be used to convey
+ * the color space of the image data in the buffer, or it can be used to
+ * indicate that the buffers contain depth measurement data instead of color
+ * images.  The default dataSpace is 0, HAL_DATASPACE_UNKNOWN, unless it has been
+ * overridden by the consumer.
+ */
+int ANativeWindow_setBufferDataSpace(ANativeWindow* window, android_dataspace_t dataSpace);
 
 
 /*
