@@ -3,7 +3,6 @@ cc_library {
     name: "libETC1",
     srcs: ["ETC1/etc1.cpp"],
     host_supported: true,
-    cflags: ["-Wall", "-Werror"],
 
     target: {
         android: {
@@ -17,7 +16,7 @@ cc_library {
             },
         },
         windows: {
-            enabled: true,
+            enabled: false,
         },
     },
 }
@@ -57,9 +56,6 @@ cc_defaults {
         "-DGL_GLEXT_PROTOTYPES",
         "-DEGL_EGLEXT_PROTOTYPES",
         "-fvisibility=hidden",
-        "-Wall",
-        "-Werror",
-        "-Wno-unused-variable",
     ],
     shared_libs: [
         // ***** DO NOT ADD NEW DEPENDENCIES HERE *****
@@ -91,11 +87,6 @@ cc_defaults {
     defaults: ["gl_libs_defaults"],
     cflags: [
         "-DLOG_TAG=\"libEGL\"",
-        "-Wall",
-        "-Werror",
-        "-Wno-error=deprecated-register",
-        "-Wno-error=unknown-attributes",
-        "-Wno-unused-variable",
     ],
     shared_libs: [
         // ***** DO NOT ADD NEW DEPENDENCIES HERE *****
@@ -141,6 +132,7 @@ cc_library_static {
 
 cc_library_shared {
     name: "libEGL",
+    cppflags: ["-DWORKAROUND_BUG_10194508"],
     defaults: ["egl_libs_defaults"],
     srcs: [
         "EGL/egl_tls.cpp",
@@ -150,6 +142,7 @@ cc_library_shared {
         "EGL/egl.cpp",
         "EGL/eglApi.cpp",
         "EGL/Loader.cpp",
+        "EGL/BlobCache.cpp",
     ],
     shared_libs: [
         "libvndksupport",
@@ -159,10 +152,7 @@ cc_library_shared {
         "libhidltransport",
         "libutils",
     ],
-    static_libs: [
-        "libEGL_getProcAddress",
-        "libEGL_blobCache",
-    ],
+    static_libs: ["libEGL_getProcAddress"],
     ldflags: ["-Wl,--exclude-libs=ALL"],
     export_include_dirs: ["EGL/include"],
 }
